@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+            margin-top: 40px;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 40px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #e6f7ff;
+        }
+        .status-completado {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .status-pendiente {
+            color: #f39c12;
+            font-weight: bold;
+        }
+        .status-cancelado {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        @media (max-width: 768px) {
+            th, td {
+                padding: 8px 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>📊 Panel de Gestión</h1>
+
+    <!-- Sección de Usuarios -->
+    <div class="table-container">
+        <h2>👥 Usuarios Registrados</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Fecha Registro</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario[0] }}</td>
+                    <td>{{ usuario[1] }}</td>
+                    <td>{{ usuario[2] }}</td>
+                    <td>{{ usuario[3].strftime('%d/%m/%Y %H:%M') }}</td>
+                    <td>{% if usuario[4] %}✅ Activo{% else %}❌ Inactivo{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Sección de Productos -->
+    <div class="table-container">
+        <h2>🛍️ Productos Disponibles</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Categoría</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                <tr>
+                    <td>{{ producto[0] }}</td>
+                    <td>{{ producto[1] }}</td>
+                    <td>${{ "{:,.2f}".format(producto[2]) }}</td>
+                    <td>{{ producto[3] }}</td>
+                    <td>{{ producto[4] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Sección de Pedidos -->
+    <div class="table-container">
+        <h2>📦 Historial de Pedidos</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Pedido</th>
+                    <th>Cliente</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pedido in pedidos %}
+                <tr>
+                    <td>{{ pedido[0] }}</td>
+                    <td>{{ pedido[1] }}</td>
+                    <td>{{ pedido[2] }}</td>
+                    <td>{{ pedido[3] }}</td>
+                    <td>${{ "{:,.2f}".format(pedido[3] * pedido[4]) }}</td>
+                    <td class="status-{{ pedido[5] }}">{{ pedido[5]|upper }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="table-container">
+        <h2>📈 Resumen General</h2>
+        <table>
+            <tr>
+                <th>Total Usuarios:</th>
+                <td>{{ usuarios|length }}</td>
+                <th>Total Productos:</th>
+                <td>{{ productos|length }}</td>
+                <th>Pedidos Completados:</th>
+                <td>{{ pedidos|selectattr('5', 'equalto', 'completado')|list|length }}</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

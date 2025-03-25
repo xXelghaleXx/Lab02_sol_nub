@@ -1,0 +1,31 @@
+services:
+  - name: mi-app-python
+    type: web
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: mi-base-de-datos
+          property: host
+      - key: DB_NAME
+        fromDatabase:
+          name: mi-base-de-datos
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: mi-base-de-datos
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: mi-base-de-datos
+          property: password
+      - key: DB_PORT
+        fromDatabase:
+          name: mi-base-de-datos
+          property: port
+
+databases:
+  - name: mi-base-de-datos
+    plan: free
